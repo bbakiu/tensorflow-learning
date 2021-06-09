@@ -1,4 +1,5 @@
 import tensorflow as tf
 import numpy as np
 
-print(tf.executing_eagerly())
+print(tf.version)
+print(np.version)
