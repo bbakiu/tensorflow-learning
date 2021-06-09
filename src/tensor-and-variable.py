@@ -25,6 +25,6 @@ var_a = tf.Variable([2.0, 3.0])
 var_b = tf.Variable(var_a)
 print(var_b)
 
-var_b.assign([200,300])
+var_b.assign([200, 300])
 print(var_a.numpy())
 print(var_b.numpy())
