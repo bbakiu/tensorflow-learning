@@ -49,6 +49,12 @@ def add_times(x1):
         num.assign_add(x1)
 
 
+@tf.function
+def square(a):
+    print('Input a: ', a)
+    return a * a
+
+
 print(sub(tf.constant(5), tf.constant(3)))
 print(mul(tf.constant(5), tf.constant(3)))
 print(div(tf.constant(5), tf.constant(3)))
@@ -69,3 +75,16 @@ num = tf.Variable(7)
 add_times(5)
 
 print(num)
+
+print(square(7))
+print(square(7.1))
+
+x = tf.Variable([[2, 2], [2, 2]], dtype=tf.float32)
+print(square(x))
+
+
+y = tf.Variable([[2, 2], [2, 2]], dtype=tf.int32)
+print(square(y))
+
+concrete_int_func = square.get_concrete_function(tf.TensorSpec(shape=None, dtype=tf.int32))
+print(concrete_int_func)
