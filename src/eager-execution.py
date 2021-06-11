@@ -24,7 +24,6 @@ y = m * c + x
 
 print(y)
 
-
 def tensorflow_div(max_num_int):
     counter = tf.constant(0)
     max_num = tf.constant(max_num_int)
