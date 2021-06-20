@@ -11,8 +11,9 @@ from sklearn.model_selection import train_test_split
 
 import tensorflow as tf
 
-from tensorflow import keras
-from tensorflow.keras import layers
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.optimizers import Adam
 
 data = pd.read_csv("../dataset/Life Expectancy Data.csv")
 
@@ -83,3 +84,36 @@ print(processed_features.head())
 
 X_train, X_test, y_train, y_test = train_test_split(processed_features, target, test_size=0.2, random_state=101)
 
+
+def build_single_layer_model():
+    model = Sequential()
+    model.add(Dense(32, input_shape=(X_train.shape[1],), activation='sigmoid'))
+    model.add(Dense(1))
+    optimier = Adam(learning_rate=0.01)
+
+    model.compile(loss='mse', metrics=['mae','mse'], optimizer=optimier)
+    return model
+
+
+model = build_single_layer_model()
+
+print(model.summary())
+# print(tf.keras.utils.plot_model(model))
+
+num_epocs = 100
+
+training_history = model.fit(X_train, y_train, epochs=num_epocs, validation_split=0.2, verbose=True)
+
+plt.plot(training_history.history['mae'])
+plt.plot(training_history.history['val_mae'])
+plt.show()
+
+plt.plot(training_history.history['loss'])
+plt.plot(training_history.history['val_loss'])
+plt.show()
+
+model.evaluate(X_test, y_test)
+
+y_pred = model.predict(X_test)
+
+r2_score(y_test, y_pred)
