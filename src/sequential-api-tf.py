@@ -1,20 +1,16 @@
-import os, datetime
-import numpy as np
-import pandas as pd
+import datetime
+import os
 
-import seaborn as sns
 import matplotlib.pyplot as plt
-
+import pandas as pd
+import seaborn as sns
 from sklearn.metrics import r2_score
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
-
-import tensorflow as tf
-
+from sklearn.preprocessing import StandardScaler
+from tensorflow.keras.callbacks import TensorBoard
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import TensorBoard
 
 data = pd.read_csv("../dataset/Life Expectancy Data.csv")
 
@@ -29,13 +25,14 @@ print(countries)
 print(data.columns)
 
 na_cols = ['Life expectancy ', 'Adult Mortality', 'Alcohol', 'Hepatitis B', ' BMI ',
-           'Polio', 'Total expenditure','Diphtheria ',  'GDP',
-           ' thinness  1-19 years', ' thinness 5-9 years',  'Population',
+           'Polio', 'Total expenditure', 'Diphtheria ', 'GDP',
+           ' thinness  1-19 years', ' thinness 5-9 years', 'Population',
            'Income composition of resources']
 
 for col in na_cols:
     for country in countries:
-        data.loc[data['Country']==country, col] = data.loc[data['Country']==country, col].fillna(data[data['Country']==country][col].mean())
+        data.loc[data['Country'] == country, col] = data.loc[data['Country'] == country, col].fillna(
+            data[data['Country'] == country][col].mean())
 
 print(data.isna().sum())
 
@@ -58,7 +55,8 @@ plt.xlabel('Status')
 plt.ylabel('Total expenditure')
 plt.show()
 
-data_corr = data[['Life expectancy ','Adult Mortality', 'Schooling', 'Total expenditure','Diphtheria ','GDP', 'Population']].corr()
+data_corr = data[['Life expectancy ', 'Adult Mortality', 'Schooling', 'Total expenditure', 'Diphtheria ', 'GDP',
+                  'Population']].corr()
 print(data_corr)
 sns.heatmap(data=data_corr, cmap='viridis', annot=True)
 plt.show()
@@ -92,7 +90,7 @@ def build_single_layer_model():
     model.add(Dense(1))
     optimier = Adam(learning_rate=0.01)
 
-    model.compile(loss='mse', metrics=['mae','mse'], optimizer=optimier)
+    model.compile(loss='mse', metrics=['mae', 'mse'], optimizer=optimier)
     return model
 
 
@@ -124,15 +122,16 @@ def build_multiple_layer_model():
     model = Sequential()
     model.add(Dense(32, input_shape=(X_train.shape[1],), activation='relu'))
     model.add(Dense(16, activation='relu'))
-    model.add(Dense(4,  activation='relu'))
+    model.add(Dense(4, activation='relu'))
     model.add(Dense(1))
     optimier = Adam(learning_rate=0.01)
 
-    model.compile(loss='mse', metrics=['mae','mse'], optimizer=optimier)
+    model.compile(loss='mse', metrics=['mae', 'mse'], optimizer=optimier)
     return model
 
 
 logdir = os.path.join('seq_logs', datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
 tensorboard_callback = TensorBoard(logdir, histogram_freq=1)
 
-training_history = model.fit(X_train, y_train, validation_split=0.2, epochs=100, batch_size=100, callbacks=[tensorboard_callback])
+training_history = model.fit(X_train, y_train, validation_split=0.2, epochs=100, batch_size=100,
+                             callbacks=[tensorboard_callback])
