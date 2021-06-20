@@ -104,4 +104,19 @@ training_history = model.fit(dataset_train, epochs=num_epochs)
 
 print(training_history.history.keys())
 
+score = model.evaluate(X_test, y_test)
 
+score_df = pd.Series(score, index=model.metrics_names)
+print(score_df)
+
+y_pred = model.predict(X_test)
+
+print(y_pred[:10])
+
+pred_results = pd.DataFrame(
+    {'y_test': y_test.values.flatten(),
+     'y_pred': y_pred.flatten().astype('int32')},
+    index=range(len(y_pred)))
+
+print(pred_results)
+print(pd.crosstab(pred_results.y_pred, pred_results.y_test))
