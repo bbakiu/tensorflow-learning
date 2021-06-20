@@ -14,6 +14,7 @@ import tensorflow as tf
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import TensorBoard
 
 data = pd.read_csv("../dataset/Life Expectancy Data.csv")
 
@@ -117,3 +118,21 @@ model.evaluate(X_test, y_test)
 y_pred = model.predict(X_test)
 
 r2_score(y_test, y_pred)
+
+
+def build_multiple_layer_model():
+    model = Sequential()
+    model.add(Dense(32, input_shape=(X_train.shape[1],), activation='relu'))
+    model.add(Dense(16, activation='relu'))
+    model.add(Dense(4,  activation='relu'))
+    model.add(Dense(1))
+    optimier = Adam(learning_rate=0.01)
+
+    model.compile(loss='mse', metrics=['mae','mse'], optimizer=optimier)
+    return model
+
+
+logdir = os.path.join('seq_logs', datetime.datetime.now().strftime('%Y%m%d-%H%M%S'))
+tensorboard_callback = TensorBoard(logdir, histogram_freq=1)
+
+training_history = model.fit(X_train, y_train, validation_split=0.2, epochs=100, batch_size=100, callbacks=[tensorboard_callback])
