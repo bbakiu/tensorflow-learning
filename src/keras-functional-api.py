@@ -1,20 +1,14 @@
-from datetime import datetime
-import pandas as pd
-
-import seaborn as sns
 import matplotlib.pyplot as plt
-
-from sklearn.metrics import r2_score, accuracy_score, precision_score, recall_score
-from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import seaborn as sns
+import tensorflow as tf
 from sklearn.model_selection import train_test_split
-
+from sklearn.preprocessing import StandardScaler
+from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.losses import BinaryCrossentropy
 from tensorflow.keras.metrics import Precision, Recall
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.losses import BinaryCrossentropy
-from tensorflow.keras.callbacks import TensorBoard
-from tensorflow.keras import Input, Model
-import tensorflow as tf
 
 data = pd.read_csv('../dataset/heart.csv')
 
@@ -93,7 +87,6 @@ model = build_model()
 
 dataset_train = tf.data.Dataset.from_tensor_slices((X_train.values, y_train.values))
 dataset_train = dataset_train.batch(16)
-
 
 num_epochs = 100
 
