@@ -1,21 +1,17 @@
-import datetime
-import os
 import json
 import pprint
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sns
+import tensorflow_docs as tfdocs
+import tensorflow_docs.modeling
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from tensorflow.keras.callbacks import TensorBoard
+from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import EarlyStopping
-import tensorflow_docs as tfdocs
-import tensorflow_docs.modeling
 
 data = pd.read_csv('../dataset/insurance.csv')
 print(data.describe().T)
@@ -39,20 +35,20 @@ target = data[['charges']]
 print(target)
 print(target.shape)
 
-categorical_features=features[['sex', 'smoker','region']].copy()
-numerical_features=features[['age', 'bmi','children']].copy()
+categorical_features = features[['sex', 'smoker', 'region']].copy()
+numerical_features = features[['age', 'bmi', 'children']].copy()
 
-gender_dict = {'female': 0, 'male':1}
-smoker_dict = {'no': 0, 'yes':1}
+gender_dict = {'female': 0, 'male': 1}
+smoker_dict = {'no': 0, 'yes': 1}
 categorical_features['sex'].replace(gender_dict, inplace=True)
 categorical_features['smoker'].replace(smoker_dict, inplace=True)
 
 categorical_features = pd.get_dummies(categorical_features, columns=['region'], drop_first=True)
 print(categorical_features.shape)
 
-
 standard_scaler = StandardScaler()
-numerical_features = pd.DataFrame(standard_scaler.fit_transform(numerical_features), columns=numerical_features.columns, index=numerical_features.index)
+numerical_features = pd.DataFrame(standard_scaler.fit_transform(numerical_features), columns=numerical_features.columns,
+                                  index=numerical_features.index)
 print(numerical_features.describe().T)
 
 processed_features = pd.concat([numerical_features, categorical_features], axis=1, sort=False)
@@ -128,7 +124,8 @@ print(model_elu_ES.summary())
 
 early_stop = EarlyStopping(monitor='val_loss', patience=5)
 
-history = model_elu_ES.fit(X_train, y_train, epochs=epochs, validation_split=0.2, verbose=True, callbacks=[early_stop, tfdocs.modeling.EpochDots()])
+history = model_elu_ES.fit(X_train, y_train, epochs=epochs, validation_split=0.2, verbose=True,
+                           callbacks=[early_stop, tfdocs.modeling.EpochDots()])
 
 history_df = pd.DataFrame(history.history)
 history_df['epoch'] = history.epoch
@@ -143,6 +140,5 @@ print(r2_score(y_test, predictions))
 
 model_elu_ES.save('./models/relu_es.h5', save_format='h5')
 model_elu_ES.save_weights('./models/relu_es_weights.h5', save_format='h5')
-
 
 print(pprint.pprint(json.loads(model_elu_ES.to_json())))
