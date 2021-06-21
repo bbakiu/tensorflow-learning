@@ -1,17 +1,7 @@
-import json
-import pprint
-
-import matplotlib.pyplot as plt
 import pandas as pd
-import tensorflow_docs as tfdocs
-import tensorflow_docs.modeling
 from sklearn.metrics import r2_score
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.layers import Dense, Dropout
-from tensorflow.keras.models import Sequential, load_model
-from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.models import load_model
 
 processed_data = pd.read_csv('../dataset/insurance_processed.csv')
 print(processed_data.head())
