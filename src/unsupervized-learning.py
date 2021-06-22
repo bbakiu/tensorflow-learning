@@ -104,14 +104,14 @@ conv_decoder = Sequential()
 conv_decoder.add(
     Conv2DTranspose(32, kernel_size=3, padding="VALID", strides=2, activation='relu', input_shape=[3, 3, 64]))
 
-conv_decoder.add(Conv2DTranspose(16, kernel_size=3, padding="VALID", strides=2, activation='relu'))
+conv_decoder.add(Conv2DTranspose(16, kernel_size=3, padding="SAME", strides=2, activation='relu'))
 
-conv_decoder.add(Conv2DTranspose(1, kernel_size=3, padding="VALID", strides=2, activation='sigmoid'))
+conv_decoder.add(Conv2DTranspose(1, kernel_size=3, padding="SAME", strides=2, activation='sigmoid'))
 conv_decoder.add(Reshape([28, 28]))
 
 conv_ae_model = Sequential([conv_encoder, conv_decoder])
 
-conv_ae_model.compile(loss=BinaryCrossentropy, optimizer=SGD(lr=1.0), metrics=['mse'])
+conv_ae_model.compile(loss=BinaryCrossentropy(), optimizer=SGD(learning_rate=1.0), metrics=['accuracy'])
 
 history_conv = conv_ae_model.fit(train_images, train_images, epochs=20, verbose=True)
 
